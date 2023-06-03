@@ -15,6 +15,8 @@ struct DataTypeAllowed {
 template <typename T>
 struct Row
 {
+    Row() = default;
+    explicit Row(std::vector<T>&& data): rowData(std::move(data)) {}
     static_assert(DataTypeAllowed<T>::value, "Unsupported data type");
     std::vector<T> rowData;
 };
@@ -35,7 +37,10 @@ private:
     std::vector<std::string> m_columnNames;
     std::vector<std::string> m_rowNames;
     std::vector<Row<std::string>> m_rawData;
-    static std::vector<std::string> splitString(const std::string& str, const std::string& delimiters);
+
+    void readColNames(std::ifstream& file);
+    void readData(std::ifstream& file);
+    static std::vector<std::string> splitString(const std::string& str, const std::string& delimiters = ",");
 
 };
 

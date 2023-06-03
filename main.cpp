@@ -4,6 +4,7 @@
 
 int main()
 {
-
+    DataFrame df("../test.csv");
     return 0;
 }
+

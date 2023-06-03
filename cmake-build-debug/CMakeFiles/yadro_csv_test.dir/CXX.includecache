@@ -6,15 +6,19 @@
 
 #IncludeRegexTransform: 
 
+D:/CLion/yadro_csv_test/DataFrame.cpp
+DataFrame.h
+D:/CLion/yadro_csv_test/DataFrame.h
+iostream
+-
+fstream
+-
+
 D:/CLion/yadro_csv_test/DataFrame.h
 vector
 -
 string
 -
-
-D:/CLion/yadro_csv_test/main.cpp
-iostream
+type_traits
 -
-DataFrame.h
-D:/CLion/yadro_csv_test/DataFrame.h
 
