@@ -128,6 +128,30 @@ yadro_csv_test/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\yadro_csv_test.dir\build.make CMakeFiles/yadro_csv_test.dir/build
 .PHONY : yadro_csv_test/fast
 
+DataFrame.obj: DataFrame.cpp.obj
+.PHONY : DataFrame.obj
+
+# target to build an object file
+DataFrame.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\yadro_csv_test.dir\build.make CMakeFiles/yadro_csv_test.dir/DataFrame.cpp.obj
+.PHONY : DataFrame.cpp.obj
+
+DataFrame.i: DataFrame.cpp.i
+.PHONY : DataFrame.i
+
+# target to preprocess a source file
+DataFrame.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\yadro_csv_test.dir\build.make CMakeFiles/yadro_csv_test.dir/DataFrame.cpp.i
+.PHONY : DataFrame.cpp.i
+
+DataFrame.s: DataFrame.cpp.s
+.PHONY : DataFrame.s
+
+# target to generate assembly for a file
+DataFrame.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\yadro_csv_test.dir\build.make CMakeFiles/yadro_csv_test.dir/DataFrame.cpp.s
+.PHONY : DataFrame.cpp.s
+
 main.obj: main.cpp.obj
 .PHONY : main.obj
 
@@ -161,6 +185,9 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... yadro_csv_test
+	@echo ... DataFrame.obj
+	@echo ... DataFrame.i
+	@echo ... DataFrame.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s

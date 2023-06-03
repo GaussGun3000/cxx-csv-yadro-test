@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "D:/CLion/yadro_csv_test/DataFrame.cpp" "D:/CLion/yadro_csv_test/cmake-build-debug/CMakeFiles/yadro_csv_test.dir/DataFrame.cpp.obj"
   "D:/CLion/yadro_csv_test/main.cpp" "D:/CLion/yadro_csv_test/cmake-build-debug/CMakeFiles/yadro_csv_test.dir/main.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

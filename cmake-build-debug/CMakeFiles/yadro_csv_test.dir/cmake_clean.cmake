@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/yadro_csv_test.dir/DataFrame.cpp.obj"
   "CMakeFiles/yadro_csv_test.dir/main.cpp.obj"
   "libyadro_csv_test.dll.a"
   "yadro_csv_test.exe"
