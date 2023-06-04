@@ -7,6 +7,8 @@
 #include <set>
 #include <map>
 
+uint32_t getStringWeight(const std::string& str);
+
 template<typename T>
 struct DataTypeAllowed {
     static constexpr bool value = std::is_same<T, int>::value
@@ -30,10 +32,18 @@ struct CellAddress
     std::string cName;
     std::string rName;
 
+    bool operator< (const CellAddress& rhs) const
+    {
+        if (this->cName == rhs.cName)
+            return (std::stoi(this->rName) < std::stoi(rhs.rName));
+        else
+            return (getStringWeight(this->cName) < getStringWeight(rhs.cName));
+    }
     bool operator== (const CellAddress& rhs) const
     { return (this->cName == rhs.cName) && (this->rName == rhs.rName); }
 
 };
+
 class DataFrame
 {
 public:
@@ -52,10 +62,12 @@ private:
     std::map<std::string, Row<std::string>> m_rawData;
     std::map<std::string, Row<double>> m_NumericData;
 
+    std::string findCell(CellAddress& ca);
     void readColNames(std::ifstream& file);
     void readData(std::ifstream& file);
+    static double arithmeticOperation(double arg1, double arg2, char op);
     CellAddress parseCellAddress(const std::string& str);
-    double parseFormula(const std::string& formula, std::vector<CellAddress>& callerCellVector);
+    double parseFormula(const std::string &formula, CellAddress& currentCell, std::set<CellAddress> &callingCells);
     static std::vector<std::string> splitString(const std::string& str, const std::string& delimiters = ",");
 };
 

@@ -8,6 +8,14 @@
 #include <limits>
 #include <algorithm>
 
+uint32_t getStringWeight(const std::string& str)
+{
+    uint32_t sum = 0;
+    for(const char& c: str)
+        sum += c;
+    return sum;
+}
+
 DataFrame::DataFrame(const std::string &filePath, const char delimiter)
 {
     std::ifstream file(filePath);
@@ -64,9 +72,9 @@ void DataFrame::translateToNumeric()
             double result;
             if(cell.at(0) == formulaFlag)
             {
-                std::vector<CellAddress> callerCellVector;
-                callerCellVector.push_back(cellAddress);
-                result = parseFormula(std::string(std::next(cell.begin()), cell.end()), callerCellVector);
+                std::set<CellAddress> callerCellSet;
+                callerCellSet.insert(cellAddress);
+                result = parseFormula(std::string(std::next(cell.begin()), cell.end()), cellAddress, callerCellSet);
             }
             else
                 try {
@@ -114,61 +122,60 @@ void DataFrame::readData(std::ifstream &file)
     }
 }
 
-double DataFrame::parseFormula(const std::string& formula, std::vector<CellAddress>& callerCellVector)
+double DataFrame::parseFormula(const std::string &formula, CellAddress& currentCell, std::set<CellAddress> &callingCells)
 {
-    /*
-    double result = 0;
+    double result = std::numeric_limits<double>::quiet_NaN();
     std::vector<std::string> elements = splitString(formula, "+/*-");
     if (elements.empty())
         return std::numeric_limits<double>::quiet_NaN();
 
-    CellAddress arg1;
-    CellAddress arg2;
+    CellAddress caArg1;
+    CellAddress caArg2;
     try
     {
-        arg1 = parseCellAddress(elements.at(0));
-        arg2 = parseCellAddress(elements.at(1));
+        caArg1 = parseCellAddress(elements.at(0));
+        caArg2 = parseCellAddress(elements.at(1));
     } catch(std::invalid_argument& e)
     {
-        std::cout << "Invalid formula in cell " << m_columnNames.at(arg1.cNameIndex)
-                  << m_rowNames.at(arg1.rNameIndex) << ". Context: \n" << e.what();
+        std::cout << "Invalid formula in cell " << currentCell.cName
+                  << currentCell.rName << ". Context: \n" << e.what();
         return std::numeric_limits<double>::quiet_NaN();
     }
-    if (std::find(callerCellVector.begin(), callerCellVector.end(), arg1) != calle ||
-    std::find(callerCellVector.begin(), callerCellVector.end(), arg2))
+    auto it1 = callingCells.find(caArg1);
+    auto it2 = callingCells.find(caArg2);
+    if (it1 != callingCells.end() || it2 != callingCells.end())
     {
-        std::cout << "Invalid formula in cell " << m_columnNames.at(arg1.cNameIndex)
-              << m_rowNames.at(arg1.rNameIndex)
-              << ". Formula in the cell references its own cell or a circular cell reference is present!";
+        std::cout << "Invalid formula in cell " << currentCell.cName << currentCell.rName
+        << ". Formula in the cell references its own cell or a circular cell reference is present!";
         return std::numeric_limits<double>::quiet_NaN();
     }
+
     const char op = formula.at(elements.at(0).length());
-    switch (op)
+    std::string arg1Raw = findCell(caArg1);
+    std::string arg2Raw = findCell(caArg2);
+    double arg1value;
+    double arg2value;
+    if (arg1Raw.at(0) == '=')
     {
-        case '+':
-            result = m_data[arg1.rNameIndex].rowData[arg1.cNameIndex] +
-                     m_data[arg2.rNameIndex].rowData[arg2.cNameIndex];
-            break;
-        case '-':
-            result = m_data[arg1.rNameIndex].rowData[arg1.cNameIndex] -
-                     m_data[arg2.rNameIndex].rowData[arg2.cNameIndex];
-            break;
-        case '*':
-            result = m_data[arg1.rNameIndex].rowData[arg1.cNameIndex] *
-                     m_data[arg2.rNameIndex].rowData[arg2.cNameIndex];
-            break;
-        case '/':
-            if (m_data[arg2.rNameIndex].rowData[arg2.cNameIndex] == 0) {
-                std::cout << "Division by zero error!";
-                return std::numeric_limits<double>::quiet_NaN();
-            }
-            result = m_data[arg1.rNameIndex].rowData[arg1.cNameIndex] /
-                     m_data[arg2.rNameIndex].rowData[arg2.cNameIndex];
-            break;
-        default:
-            std::cout << "Unsupported operator: " << op;
-            return std::numeric_limits<double>::quiet_NaN();
-    } */
+        callingCells.insert(currentCell);
+        arg1value = parseFormula(std::string(std::next(arg1Raw.begin()), arg1Raw.end()), caArg1, callingCells);
+    }
+    else arg1value = std::stod(arg1Raw);
+    if (arg2Raw.at(0) == '=')
+    {
+        callingCells.insert(currentCell);
+        arg2value = parseFormula(std::string(std::next(arg1Raw.begin()), arg1Raw.end()), caArg2, callingCells);
+    }
+    else arg2value = std::stod(arg2Raw);
+    try
+    {
+        result = arithmeticOperation(arg1value, arg2value, op);
+    }catch (std::invalid_argument& e)
+    {
+        std::cout << "Failed to calculate value at " << currentCell.cName << currentCell.rName <<
+        ". Context: \n " << e.what();
+    }
+    return result;
 }
 
 CellAddress DataFrame::parseCellAddress(const std::string& str) {
@@ -189,4 +196,35 @@ CellAddress DataFrame::parseCellAddress(const std::string& str) {
         throw std::invalid_argument("cell address defined by sting \"" + str + "\" was not found in DataFrame" );
 
     return {columnName, rowName};
+}
+
+std::string DataFrame::findCell(CellAddress &ca)
+{
+    std::string str = m_rawData.at(ca.rName).rowData.at(ca.cName);
+    return std::move(str);
+}
+
+double DataFrame::arithmeticOperation(double arg1, double arg2, const char op)
+{
+    double result = std::numeric_limits<double>::quiet_NaN();
+    switch (op)
+    {
+        case '+':
+            result = arg1 + arg2;
+            break;
+        case '-':
+            result = arg1 - arg2;
+            break;
+        case '*':
+            result = arg1 * arg2;
+            break;
+        case '/':
+            if (arg2 == 0)
+                throw std::invalid_argument("Division by zero");
+            result = arg1 / arg2;
+            break;
+        default:
+            throw std::invalid_argument("Unsupported operator");
+    }
+    return result;
 }

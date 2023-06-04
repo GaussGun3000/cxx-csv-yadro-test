@@ -5,6 +5,7 @@
 int main()
 {
     DataFrame df("../test.csv");
+    df.translateToNumeric();
     return 0;
 }
 
