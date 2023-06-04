@@ -5,6 +5,7 @@
 #include "DataFrame.h"
 #include <iostream>
 #include <fstream>
+#include <limits>
 
 DataFrame::DataFrame(const std::string &filePath, const char delimiter)
 {
@@ -48,7 +49,30 @@ void DataFrame::printData(uint32_t rows, uint32_t columns)
 
 void DataFrame::translateToNumeric()
 {
+    if (m_rawData.empty())
+        throw std::runtime_error("Raw data of DataFrame is empty. Check CSV file");
 
+    const char formulaFlag = '=';
+    for (const auto& row : m_rawData)
+    {
+        Row<double> newRow;
+        for (const auto& cell : row.rowData)
+        {
+            double result;
+            if(cell.at(0) == formulaFlag)
+                result = parseFormula(std::string(std::next(cell.begin()), cell.end()));
+            else
+                try {
+                    result = std::stod(cell);
+                }
+                catch (const std::invalid_argument& e) {
+                    result = std::numeric_limits<double>::quiet_NaN();
+                } catch (const std::out_of_range& e) {
+                    result = std::numeric_limits<double>::quiet_NaN();
+                }
+            newRow.rowData.push_back(result);
+        }
+    }
 }
 
 void DataFrame::readColNames(std::ifstream& file)
@@ -73,5 +97,15 @@ void DataFrame::readData(std::ifstream &file)
                            std::make_move_iterator(cells.end()));
         this->m_rawData.push_back(row);
     }
+}
+
+double DataFrame::parseFormula(const std::string& formula)
+{
+    double result = 0;
+    std::vector<std::string> elements = splitString(formula, "+/*-");
+    if(elements.empty())
+        return  std::numeric_limits<double>::quiet_NaN();
+
+    auto value_1
 }
 

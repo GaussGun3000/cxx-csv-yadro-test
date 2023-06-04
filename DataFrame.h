@@ -21,6 +21,16 @@ struct Row
     std::vector<T> rowData;
 };
 
+struct cellAddress
+{
+    cellAddress(uint32_t c, uint32_t r): cNameIndex(c), rNameIndex(r) {}
+    const uint32_t cNameIndex;
+    const uint32_t rNameIndex;
+
+    bool operator== (const cellAddress& rhs) const
+    { return (this->cNameIndex == rhs.cNameIndex) && (this->rNameIndex == rhs.rNameIndex); }
+
+};
 class DataFrame
 {
 public:
@@ -40,6 +50,7 @@ private:
 
     void readColNames(std::ifstream& file);
     void readData(std::ifstream& file);
+    static double parseFormula(const std::string& formula);
     static std::vector<std::string> splitString(const std::string& str, const std::string& delimiters = ",");
 
 };
