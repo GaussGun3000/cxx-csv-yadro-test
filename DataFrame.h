@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <type_traits>
+#include <set>
+#include <map>
 
 template<typename T>
 struct DataTypeAllowed {
@@ -16,19 +18,20 @@ template <typename T>
 struct Row
 {
     Row() = default;
-    explicit Row(std::vector<T>&& data): rowData(std::move(data)) {}
+    explicit Row(std::map<std::string, T>&& data): rowData(std::move(data)) {}
     static_assert(DataTypeAllowed<T>::value, "Unsupported data type");
-    std::vector<T> rowData;
+    std::map<std::string, T> rowData;
 };
 
-struct cellAddress
+struct CellAddress
 {
-    cellAddress(uint32_t c, uint32_t r): cNameIndex(c), rNameIndex(r) {}
-    const uint32_t cNameIndex;
-    const uint32_t rNameIndex;
+    CellAddress(): cName(""), rName("") {};
+    CellAddress(const std::string& col, const std::string& row): cName(col), rName(row) {}
+    std::string cName;
+    std::string rName;
 
-    bool operator== (const cellAddress& rhs) const
-    { return (this->cNameIndex == rhs.cNameIndex) && (this->rNameIndex == rhs.rNameIndex); }
+    bool operator== (const CellAddress& rhs) const
+    { return (this->cName == rhs.cName) && (this->rName == rhs.rName); }
 
 };
 class DataFrame
@@ -44,15 +47,16 @@ public:
     std::vector<Row<double>> getNumericData;
 
 private:
-    std::vector<std::string> m_columnNames;
-    std::vector<std::string> m_rowNames;
-    std::vector<Row<std::string>> m_rawData;
+    std::set<std::string> m_columnNames;
+    std::set<std::string> m_rowNames;
+    std::map<std::string, Row<std::string>> m_rawData;
+    std::map<std::string, Row<double>> m_NumericData;
 
     void readColNames(std::ifstream& file);
     void readData(std::ifstream& file);
-    static double parseFormula(const std::string& formula);
+    CellAddress parseCellAddress(const std::string& str);
+    double parseFormula(const std::string& formula, std::vector<CellAddress>& callerCellVector);
     static std::vector<std::string> splitString(const std::string& str, const std::string& delimiters = ",");
-
 };
 
 
