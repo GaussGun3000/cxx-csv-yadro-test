@@ -4,8 +4,9 @@
 
 int main()
 {
-    DataFrame df("../test.csv");
+    DataFrame df("test3.csv");
     df.translateToNumeric();
+    df.printData();
     return 0;
 }
 

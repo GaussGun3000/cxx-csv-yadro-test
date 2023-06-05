@@ -1,20 +1,8 @@
-//
-// Created by vva07 on 03.06.2023.
-//
-
 #include "DataFrame.h"
 #include <iostream>
 #include <fstream>
 #include <limits>
 #include <algorithm>
-
-uint32_t getStringWeight(const std::string& str)
-{
-    uint32_t sum = 0;
-    for(const char& c: str)
-        sum += c;
-    return sum;
-}
 
 DataFrame::DataFrame(const std::string &filePath, const char delimiter)
 {
@@ -53,6 +41,41 @@ std::vector<std::string> DataFrame::splitString(const std::string& str, const st
 
 void DataFrame::printData(uint32_t rows, uint32_t columns)
 {
+    if (m_NumericData.empty())
+    {
+        std::cout << "Numeric data of DataFrame is not filled!";
+        return;
+    }
+    if (rows == 0)
+        rows = m_rowNames.size();
+    if (columns == 0)
+        columns = m_columnNames.size();
+
+    uint32_t rowCounter = 0, columnCounter = 0;
+    std::cout.precision(2);
+    std::cout << "\n\t\t--- DataFrame ---\n\n";
+    for (const auto& cName : m_columnNames)
+    {
+        if (columnCounter >= columns)
+            break;
+        columnCounter == 0 ? std::cout << "\t" : std::cout << ",";
+        std::cout << " " << cName;
+        columnCounter++;
+    }
+    for (const auto& rName : m_rowNames)
+    {
+        if (rowCounter >= rows) break;
+        std::cout << std::endl << rName << "  ";
+        columnCounter = 0;
+        for (const auto& cName: m_columnNames)
+        {
+            if (columnCounter >= columns) break;
+            if (columnCounter > 0) std::cout << ",";
+            std::cout << m_NumericData.at(rName).rowData.at(cName);
+            columnCounter++;
+        }
+        rowCounter++;
+    }
 
 }
 
@@ -96,7 +119,7 @@ void DataFrame::readColNames(std::ifstream& file)
     std::string line;
     std::getline(file, line);
     std::vector<std::string> columnNames = splitString(line);
-    m_columnNames = std::set<std::string>(std::next(columnNames.begin()), columnNames.end());
+    m_columnNames = std::set<std::string, StringWeightComparator>(std::next(columnNames.begin()), columnNames.end());
     if(m_columnNames.size() < columnNames.size() - 1)
         throw std::runtime_error("Unable to parse CSV file, duplicate column names are present!");
 }
@@ -108,6 +131,8 @@ void DataFrame::readData(std::ifstream &file)
     if (!line.empty())
     {
         std::vector<std::string> cells = splitString(line);
+        if (cells.size() != m_columnNames.size() + 1)
+            throw std::out_of_range("Not enough columns in row " + cells.at(0));
         auto insertion_result = m_rowNames.insert(cells.at(0));
         if (!insertion_result.second)
             throw std::runtime_error("Unable to parse CSV file, duplicate row names are present!");
@@ -138,7 +163,7 @@ double DataFrame::parseFormula(const std::string &formula, CellAddress& currentC
     } catch(std::invalid_argument& e)
     {
         std::cout << "Invalid formula in cell " << currentCell.cName
-                  << currentCell.rName << ". Context: \n" << e.what();
+                  << currentCell.rName << ".\nContext: " << e.what() << std::endl;
         return std::numeric_limits<double>::quiet_NaN();
     }
     auto it1 = callingCells.find(caArg1);
@@ -146,7 +171,7 @@ double DataFrame::parseFormula(const std::string &formula, CellAddress& currentC
     if (it1 != callingCells.end() || it2 != callingCells.end())
     {
         std::cout << "Invalid formula in cell " << currentCell.cName << currentCell.rName
-        << ". Formula in the cell references its own cell or a circular cell reference is present!";
+        << ". Formula in the cell references its own cell or a circular cell reference is present!" << std::endl;
         return std::numeric_limits<double>::quiet_NaN();
     }
 
@@ -164,7 +189,7 @@ double DataFrame::parseFormula(const std::string &formula, CellAddress& currentC
     if (arg2Raw.at(0) == '=')
     {
         callingCells.insert(currentCell);
-        arg2value = parseFormula(std::string(std::next(arg1Raw.begin()), arg1Raw.end()), caArg2, callingCells);
+        arg2value = parseFormula(std::string(std::next(arg2Raw.begin()), arg2Raw.end()), caArg2, callingCells);
     }
     else arg2value = std::stod(arg2Raw);
     try
@@ -173,7 +198,7 @@ double DataFrame::parseFormula(const std::string &formula, CellAddress& currentC
     }catch (std::invalid_argument& e)
     {
         std::cout << "Failed to calculate value at " << currentCell.cName << currentCell.rName <<
-        ". Context: \n " << e.what();
+        ".\nContext: " << e.what() << std::endl;
     }
     return result;
 }

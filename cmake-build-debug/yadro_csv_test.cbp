@@ -80,6 +80,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="D:/CLion/yadro_csv_test/DFSupportStructs.h">
+			<Option target="yadro_csv_test"/>
+		</Unit>
 		<Unit filename="D:/CLion/yadro_csv_test/DataFrame.cpp">
 			<Option target="yadro_csv_test"/>
 		</Unit>

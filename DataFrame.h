@@ -2,47 +2,8 @@
 #define YADRO_CSV_TEST_DATAFRAME_H
 
 #include <vector>
-#include <string>
-#include <type_traits>
 #include <set>
-#include <map>
-
-uint32_t getStringWeight(const std::string& str);
-
-template<typename T>
-struct DataTypeAllowed {
-    static constexpr bool value = std::is_same<T, int>::value
-                                  || std::is_same<T, double>::value
-                                  || std::is_same<T, std::string>::value;
-};
-
-template <typename T>
-struct Row
-{
-    Row() = default;
-    explicit Row(std::map<std::string, T>&& data): rowData(std::move(data)) {}
-    static_assert(DataTypeAllowed<T>::value, "Unsupported data type");
-    std::map<std::string, T> rowData;
-};
-
-struct CellAddress
-{
-    CellAddress(): cName(""), rName("") {};
-    CellAddress(const std::string& col, const std::string& row): cName(col), rName(row) {}
-    std::string cName;
-    std::string rName;
-
-    bool operator< (const CellAddress& rhs) const
-    {
-        if (this->cName == rhs.cName)
-            return (std::stoi(this->rName) < std::stoi(rhs.rName));
-        else
-            return (getStringWeight(this->cName) < getStringWeight(rhs.cName));
-    }
-    bool operator== (const CellAddress& rhs) const
-    { return (this->cName == rhs.cName) && (this->rName == rhs.rName); }
-
-};
+#include "DFSupportStructs.h"
 
 class DataFrame
 {
@@ -57,8 +18,8 @@ public:
     std::vector<Row<double>> getNumericData;
 
 private:
-    std::set<std::string> m_columnNames;
-    std::set<std::string> m_rowNames;
+    std::set<std::string, StringWeightComparator> m_columnNames;
+    std::set<std::string, StringWeightComparator> m_rowNames;
     std::map<std::string, Row<std::string>> m_rawData;
     std::map<std::string, Row<double>> m_NumericData;
 
