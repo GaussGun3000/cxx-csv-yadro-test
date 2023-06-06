@@ -16,13 +16,17 @@ public:
     void translateToNumeric();
     std::vector<Row<std::string>> getRawData;
     std::vector<Row<double>> getNumericData;
+    void toggleWarnings(bool newWarningOutputStatus);
 
 private:
     std::set<std::string, StringWeightComparator> m_columnNames;
     std::set<std::string, StringWeightComparator> m_rowNames;
+    std::vector<std::string> m_columnNamesOriginalOrder;
     std::map<std::string, Row<std::string>> m_rawData;
     std::map<std::string, Row<double>> m_NumericData;
+    bool m_enableWarnings = false;
 
+    double parseDouble(CellAddress& ca);
     std::string findCell(CellAddress& ca);
     void readColNames(std::ifstream& file, char delimiter = ',');
     void readData(std::ifstream& file, char delimiter = ',');

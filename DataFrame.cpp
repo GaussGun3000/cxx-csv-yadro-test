@@ -9,7 +9,6 @@ DataFrame::DataFrame(const std::string &filePath, const char delimiter)
     std::ifstream file(filePath);
     if (!file.is_open())
     {
-        std::cout << "WARNING: COULD NOT OPEN THE CSV FILE (" << filePath << ")" << std::endl;
         throw std::runtime_error("Failed to open CSV file: " + filePath);
     }
 
@@ -43,7 +42,7 @@ void DataFrame::printData(uint32_t rows, uint32_t columns)
 {
     if (m_NumericData.empty())
     {
-        std::cout << "Numeric data of DataFrame is not filled!";
+        std::cout << "Error: Numeric data of DataFrame is not filled!";
         return;
     }
     if (rows == 0)
@@ -79,6 +78,42 @@ void DataFrame::printData(uint32_t rows, uint32_t columns)
 
 }
 
+void DataFrame::readColNames(std::ifstream& file, const char delimiter)
+{
+    std::string line;
+    std::getline(file, line);
+    std::vector<std::string> columnNames = splitString(line, std::string(1, delimiter));
+    m_columnNames = std::set<std::string, StringWeightComparator>(std::next(columnNames.begin()), columnNames.end());
+    m_columnNamesOriginalOrder.insert(m_columnNamesOriginalOrder.end(),
+                                      std::make_move_iterator(std::next(columnNames.begin())),
+                                      std::make_move_iterator(columnNames.end()));
+    if(m_columnNames.size() < columnNames.size() - 1)
+        throw std::runtime_error("Unable to parse CSV file, duplicate column names are present!");
+}
+
+void DataFrame::readData(std::ifstream &file, const char delimiter)
+{
+    std::string line;
+    while(std::getline(file, line))
+    if (!line.empty())
+    {
+        std::vector<std::string> cells = splitString(line, std::string(1, delimiter));
+        if (cells.size() != m_columnNames.size() + 1)
+            throw std::out_of_range("Not enough columns in row " + cells.at(0));
+        auto insertion_result = m_rowNames.insert(cells.at(0));
+        if (!insertion_result.second)
+            throw std::runtime_error("Unable to parse CSV file, duplicate row names are present!");
+        Row<std::string> row;
+        auto valueIterator = std::next(cells.begin());
+        for(const auto& columnName : m_columnNamesOriginalOrder)
+        {
+            row.rowData.insert(std::make_pair(columnName, *valueIterator));
+            valueIterator++;
+        }
+        this->m_rawData.insert(std::make_pair(cells.at(0), row));
+    }
+}
+
 void DataFrame::translateToNumeric()
 {
     if (m_rawData.empty())
@@ -101,50 +136,10 @@ void DataFrame::translateToNumeric()
                                       callerCellSet);
             }
             else
-                try {
-                    result = std::stod(cell);
-                }
-                catch (const std::invalid_argument& e) {
-                    result = std::numeric_limits<double>::quiet_NaN();
-                } catch (const std::out_of_range& e) {
-                    result = std::numeric_limits<double>::quiet_NaN();
-                }
+                result = parseDouble(cellAddress);
             newRow.rowData.insert(std::make_pair(kvCell.first, result));
         }
         m_NumericData.insert(std::make_pair(kvRow.first, newRow));
-    }
-}
-
-void DataFrame::readColNames(std::ifstream& file, const char delimiter)
-{
-    std::string line;
-    std::getline(file, line);
-    std::vector<std::string> columnNames = splitString(line, std::string(1, delimiter));
-    m_columnNames = std::set<std::string, StringWeightComparator>(std::next(columnNames.begin()), columnNames.end());
-    if(m_columnNames.size() < columnNames.size() - 1)
-        throw std::runtime_error("Unable to parse CSV file, duplicate column names are present!");
-}
-
-void DataFrame::readData(std::ifstream &file, const char delimiter)
-{
-    std::string line;
-    while(std::getline(file, line))
-    if (!line.empty())
-    {
-        std::vector<std::string> cells = splitString(line, std::string(1, delimiter));
-        if (cells.size() != m_columnNames.size() + 1)
-            throw std::out_of_range("Not enough columns in row " + cells.at(0));
-        auto insertion_result = m_rowNames.insert(cells.at(0));
-        if (!insertion_result.second)
-            throw std::runtime_error("Unable to parse CSV file, duplicate row names are present!");
-        Row<std::string> row;
-        auto valueIterator = std::next(cells.begin());
-        for(const auto& columnName : m_columnNames)
-        {
-            row.rowData.insert(std::make_pair(columnName, *valueIterator));
-            valueIterator++;
-        }
-        this->m_rawData.insert(std::make_pair(cells.at(0), row));
     }
 }
 
@@ -164,7 +159,7 @@ double DataFrame::parseFormula(const std::string &formula, CellAddress &currentC
         caArg2 = parseCellAddress(elements.at(1));
     } catch(std::invalid_argument& e)
     {
-        std::cout << "Invalid formula in cell " << originalCaller.cName
+        if(m_enableWarnings) std::cout << "Warning: Invalid formula in cell " << originalCaller.cName
                   << originalCaller.rName << ".\nContext: " << e.what() << std::endl;
         return std::numeric_limits<double>::quiet_NaN();
     }
@@ -172,7 +167,7 @@ double DataFrame::parseFormula(const std::string &formula, CellAddress &currentC
     auto it2 = callingCells.find(caArg2);
     if (it1 != callingCells.end() || it2 != callingCells.end())
     {
-        std::cout << "Invalid formula in cell " << originalCaller.cName << originalCaller.rName
+        if(m_enableWarnings) std::cout << "Warning: Invalid formula in cell " << originalCaller.cName << originalCaller.rName
         << ". Formula in the cell references its own cell or a circular cell reference is present!" << std::endl;
         return std::numeric_limits<double>::quiet_NaN();
     }
@@ -188,20 +183,20 @@ double DataFrame::parseFormula(const std::string &formula, CellAddress &currentC
         arg1value = parseFormula(std::string(std::next(arg1Raw.begin()), arg1Raw.end()), caArg1, originalCaller,
                                  callingCells);
     }
-    else arg1value = std::stod(arg1Raw);
+    else arg1value = parseDouble(caArg1);
     if (arg2Raw.at(0) == '=')
     {
         callingCells.insert(currentCell);
         arg2value = parseFormula(std::string(std::next(arg2Raw.begin()), arg2Raw.end()), caArg2, originalCaller,
                                  callingCells);
     }
-    else arg2value = std::stod(arg2Raw);
+    else arg2value = parseDouble(caArg2);
     try
     {
         result = arithmeticOperation(arg1value, arg2value, op);
     }catch (std::invalid_argument& e)
     {
-        std::cout << "Failed to calculate value at " << currentCell.cName << currentCell.rName <<
+        if(m_enableWarnings) std::cout << "Warning: Failed to calculate value at " << currentCell.cName << currentCell.rName <<
         ".\nContext: " << e.what() << std::endl;
     }
     callingCells.erase(currentCell);
@@ -257,4 +252,25 @@ double DataFrame::arithmeticOperation(double arg1, double arg2, const char op)
             throw std::invalid_argument("Unsupported operator");
     }
     return result;
+}
+
+void DataFrame::toggleWarnings(bool newWarningOutputStatus)
+{
+    m_enableWarnings = newWarningOutputStatus;
+}
+
+double DataFrame::parseDouble(CellAddress &ca)
+{
+    double dValue = std::numeric_limits<double>::quiet_NaN();
+    std::string rawValue = findCell(ca);
+    try{
+        dValue = std::stod(rawValue);
+    }
+    catch (const std::invalid_argument& e) {
+        if (m_enableWarnings)
+            std::cout << "Warning: unable to parse value at " << ca.cName << ca.rName << " into a number!" << std::endl;
+    } catch (const std::out_of_range& e) {
+        std::cout << "Warning: Value at " << ca.cName << ca.rName << " is out of limits for double" << std::endl;
+    }
+    return dValue;
 }
