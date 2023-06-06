@@ -274,3 +274,8 @@ double DataFrame::parseDouble(CellAddress &ca)
     }
     return dValue;
 }
+
+double DataFrame::accessNumericCell(const CellAddress& ca)
+{
+    return m_NumericData.at(ca.rName).rowData.at(ca.cName);
+}

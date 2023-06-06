@@ -1,3 +1,4 @@
 D:/CLion/yadro_csv_test/cmake-build-debug/CMakeFiles/yadro_csv_test.dir
+D:/CLion/yadro_csv_test/cmake-build-debug/CMakeFiles/testing.dir
 D:/CLion/yadro_csv_test/cmake-build-debug/CMakeFiles/edit_cache.dir
 D:/CLion/yadro_csv_test/cmake-build-debug/CMakeFiles/rebuild_cache.dir

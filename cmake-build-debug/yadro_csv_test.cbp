@@ -59,6 +59,48 @@
 					<DistClean command="D:/MinGW2/mingw64/bin/mingw32-make.exe -f &quot;D:/CLion/yadro_csv_test/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="testing">
+				<Option output="D:/CLion/yadro_csv_test/cmake-build-debug/testing.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CLion/yadro_csv_test/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="D:/MinGW2/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="D:/MinGW2/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="D:/MinGW2/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="D:/MinGW2/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="D:/MinGW2/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="D:/MinGW2/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="D:/MinGW2/mingw64/bin/mingw32-make.exe -f &quot;D:/CLion/yadro_csv_test/cmake-build-debug/Makefile&quot;  VERBOSE=1 testing"/>
+					<CompileFile command="D:/MinGW2/mingw64/bin/mingw32-make.exe -f &quot;D:/CLion/yadro_csv_test/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/MinGW2/mingw64/bin/mingw32-make.exe -f &quot;D:/CLion/yadro_csv_test/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/MinGW2/mingw64/bin/mingw32-make.exe -f &quot;D:/CLion/yadro_csv_test/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="testing/fast">
+				<Option output="D:/CLion/yadro_csv_test/cmake-build-debug/testing.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CLion/yadro_csv_test/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="D:/MinGW2/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="D:/MinGW2/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32"/>
+					<Add directory="D:/MinGW2/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="D:/MinGW2/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="D:/MinGW2/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="D:/MinGW2/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="D:/MinGW2/mingw64/bin/mingw32-make.exe -f &quot;D:/CLion/yadro_csv_test/cmake-build-debug/Makefile&quot;  VERBOSE=1 testing/fast"/>
+					<CompileFile command="D:/MinGW2/mingw64/bin/mingw32-make.exe -f &quot;D:/CLion/yadro_csv_test/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="D:/MinGW2/mingw64/bin/mingw32-make.exe -f &quot;D:/CLion/yadro_csv_test/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="D:/MinGW2/mingw64/bin/mingw32-make.exe -f &quot;D:/CLion/yadro_csv_test/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 			<Target title="edit_cache">
 				<Option working_dir="D:/CLion/yadro_csv_test/cmake-build-debug"/>
 				<Option type="4"/>
@@ -82,15 +124,21 @@
 		</Build>
 		<Unit filename="D:/CLion/yadro_csv_test/DFSupportStructs.h">
 			<Option target="yadro_csv_test"/>
+			<Option target="testing"/>
 		</Unit>
 		<Unit filename="D:/CLion/yadro_csv_test/DataFrame.cpp">
 			<Option target="yadro_csv_test"/>
+			<Option target="testing"/>
 		</Unit>
 		<Unit filename="D:/CLion/yadro_csv_test/DataFrame.h">
 			<Option target="yadro_csv_test"/>
+			<Option target="testing"/>
 		</Unit>
 		<Unit filename="D:/CLion/yadro_csv_test/main.cpp">
 			<Option target="yadro_csv_test"/>
+		</Unit>
+		<Unit filename="D:/CLion/yadro_csv_test/test.cpp">
+			<Option target="testing"/>
 		</Unit>
 		<Unit filename="D:/CLion/yadro_csv_test/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>

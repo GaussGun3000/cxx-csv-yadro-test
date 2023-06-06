@@ -4,3 +4,4 @@ project(yadro_csv_test)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(yadro_csv_test main.cpp DataFrame.cpp DataFrame.h DFSupportStructs.h)
+add_executable(testing test.cpp DataFrame.cpp DataFrame.h DFSupportStructs.h)

@@ -14,18 +14,6 @@ map
 string
 -
 
-D:/CLion/yadro_csv_test/DataFrame.cpp
-DataFrame.h
-D:/CLion/yadro_csv_test/DataFrame.h
-iostream
--
-fstream
--
-limits
--
-algorithm
--
-
 D:/CLion/yadro_csv_test/DataFrame.h
 vector
 -

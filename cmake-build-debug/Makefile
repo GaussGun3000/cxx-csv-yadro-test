@@ -128,12 +128,26 @@ yadro_csv_test/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\yadro_csv_test.dir\build.make CMakeFiles/yadro_csv_test.dir/build
 .PHONY : yadro_csv_test/fast
 
+#=============================================================================
+# Target rules for targets named testing
+
+# Build rule for target.
+testing: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 testing
+.PHONY : testing
+
+# fast build rule for target.
+testing/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\testing.dir\build.make CMakeFiles/testing.dir/build
+.PHONY : testing/fast
+
 DataFrame.obj: DataFrame.cpp.obj
 .PHONY : DataFrame.obj
 
 # target to build an object file
 DataFrame.cpp.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\yadro_csv_test.dir\build.make CMakeFiles/yadro_csv_test.dir/DataFrame.cpp.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\testing.dir\build.make CMakeFiles/testing.dir/DataFrame.cpp.obj
 .PHONY : DataFrame.cpp.obj
 
 DataFrame.i: DataFrame.cpp.i
@@ -142,6 +156,7 @@ DataFrame.i: DataFrame.cpp.i
 # target to preprocess a source file
 DataFrame.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\yadro_csv_test.dir\build.make CMakeFiles/yadro_csv_test.dir/DataFrame.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\testing.dir\build.make CMakeFiles/testing.dir/DataFrame.cpp.i
 .PHONY : DataFrame.cpp.i
 
 DataFrame.s: DataFrame.cpp.s
@@ -150,6 +165,7 @@ DataFrame.s: DataFrame.cpp.s
 # target to generate assembly for a file
 DataFrame.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\yadro_csv_test.dir\build.make CMakeFiles/yadro_csv_test.dir/DataFrame.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\testing.dir\build.make CMakeFiles/testing.dir/DataFrame.cpp.s
 .PHONY : DataFrame.cpp.s
 
 main.obj: main.cpp.obj
@@ -176,6 +192,30 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\yadro_csv_test.dir\build.make CMakeFiles/yadro_csv_test.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+test.obj: test.cpp.obj
+.PHONY : test.obj
+
+# target to build an object file
+test.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\testing.dir\build.make CMakeFiles/testing.dir/test.cpp.obj
+.PHONY : test.cpp.obj
+
+test.i: test.cpp.i
+.PHONY : test.i
+
+# target to preprocess a source file
+test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\testing.dir\build.make CMakeFiles/testing.dir/test.cpp.i
+.PHONY : test.cpp.i
+
+test.s: test.cpp.s
+.PHONY : test.s
+
+# target to generate assembly for a file
+test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\testing.dir\build.make CMakeFiles/testing.dir/test.cpp.s
+.PHONY : test.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -184,6 +224,7 @@ help:
 	@echo ... depend
 	@echo ... edit_cache
 	@echo ... rebuild_cache
+	@echo ... testing
 	@echo ... yadro_csv_test
 	@echo ... DataFrame.obj
 	@echo ... DataFrame.i
@@ -191,6 +232,9 @@ help:
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s
+	@echo ... test.obj
+	@echo ... test.i
+	@echo ... test.s
 .PHONY : help
 
 

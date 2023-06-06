@@ -17,6 +17,7 @@ public:
     std::vector<Row<std::string>> getRawData;
     std::vector<Row<double>> getNumericData;
     void toggleWarnings(bool newWarningOutputStatus);
+    double accessNumericCell(const CellAddress& ca);
 
 private:
     std::set<std::string, StringWeightComparator> m_columnNames;
