@@ -24,11 +24,12 @@ private:
     std::map<std::string, Row<double>> m_NumericData;
 
     std::string findCell(CellAddress& ca);
-    void readColNames(std::ifstream& file);
-    void readData(std::ifstream& file);
+    void readColNames(std::ifstream& file, char delimiter = ',');
+    void readData(std::ifstream& file, char delimiter = ',');
     static double arithmeticOperation(double arg1, double arg2, char op);
     CellAddress parseCellAddress(const std::string& str);
-    double parseFormula(const std::string &formula, CellAddress& currentCell, std::set<CellAddress> &callingCells);
+    double parseFormula(const std::string &formula, CellAddress &currentCell, CellAddress &originalCaller,
+                        std::set<CellAddress> &callingCells);
     static std::vector<std::string> splitString(const std::string& str, const std::string& delimiters = ",");
 };
 
