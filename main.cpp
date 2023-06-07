@@ -29,6 +29,8 @@ int main(int argc, char* argv[])
     {
         std::cout << "Something went wrong:\n" << e.what();
     }
+    std::cout << "\n\nPress enter to exit" << std::endl;
+    getchar();
     return 0;
 }
 
