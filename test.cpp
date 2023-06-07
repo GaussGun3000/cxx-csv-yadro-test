@@ -21,7 +21,7 @@ int main()
     }
     catch (std::exception& e)
     {
-        std::cout << "Something went wrong in  " << testTitle <<std::endl << e.what();
+        std::cout << "Something went wrong in  " << testTitle <<std::endl << e.what() << std::endl;
     }
     try
     {
@@ -38,7 +38,7 @@ int main()
     }
     catch (std::exception& e)
     {
-        std::cout << "Something went wrong in  " << testTitle <<std::endl << e.what();
+        std::cout << "Something went wrong in  " << testTitle <<std::endl << e.what() << std::endl;
     }
     try
     {
@@ -55,7 +55,7 @@ int main()
     }
     catch (std::exception& e)
     {
-        std::cout << "Something went wrong in  " << testTitle <<std::endl << e.what();
+        std::cout << "Something went wrong in  " << testTitle <<std::endl << e.what() << std::endl;
     }
     try
     {
@@ -76,7 +76,7 @@ int main()
     }
     catch (std::exception& e)
     {
-        std::cout << "Something went wrong in  " << testTitle <<std::endl << e.what();
+        std::cout << "Something went wrong in  " << testTitle <<std::endl << e.what() << std::endl;
     }
     try
     {
@@ -97,8 +97,9 @@ int main()
     }
     catch (std::exception& e)
     {
-        std::cout << "Something went wrong in  " << testTitle <<std::endl << e.what();
+        std::cout << "Something went wrong in  " << testTitle <<std::endl << e.what() << std::endl;
     }
+    getchar();
     return 0;
 }
 

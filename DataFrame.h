@@ -8,10 +8,8 @@
 class DataFrame
 {
 public:
-    DataFrame(const std::string& filePath, char delimiter = ',');
-    DataFrame(const std::string& filePath, uint32_t rcNamingMode, char delimiter = ',');
+    explicit DataFrame(const std::string& filePath, char delimiter = ',');
 
-    enum class rcNamingModes {rNUMBERS_cLETTERS = 0};
     void printData(uint32_t rows = 0, uint32_t columns = 0);
     void translateToNumeric();
     std::vector<Row<std::string>> getRawData;

@@ -16,12 +16,6 @@ DataFrame::DataFrame(const std::string &filePath, const char delimiter)
     readData(file, delimiter);
 }
 
-DataFrame::DataFrame(const std::string &filePath, const uint32_t rcNamingMode, const char delimiter)
-{
-
-}
-
-
 std::vector<std::string> DataFrame::splitString(const std::string& str, const std::string& delimiters)
 {
     std::vector<std::string> tokens;
@@ -42,7 +36,7 @@ void DataFrame::printData(uint32_t rows, uint32_t columns)
 {
     if (m_NumericData.empty())
     {
-        std::cout << "Error: Numeric data of DataFrame is not filled!";
+        std::cout << "Error: Numeric data of DataFrame is not filled!\n";
         return;
     }
     if (rows == 0)

@@ -14,6 +14,18 @@ map
 string
 -
 
+D:/CLion/yadro_csv_test/DataFrame.cpp
+DataFrame.h
+D:/CLion/yadro_csv_test/DataFrame.h
+iostream
+-
+fstream
+-
+limits
+-
+algorithm
+-
+
 D:/CLion/yadro_csv_test/DataFrame.h
 vector
 -
@@ -21,12 +33,4 @@ set
 -
 DFSupportStructs.h
 D:/CLion/yadro_csv_test/DFSupportStructs.h
-
-D:/CLion/yadro_csv_test/main.cpp
-iostream
--
-DataFrame.h
-D:/CLion/yadro_csv_test/DataFrame.h
-memory
--
 
